@@ -1,5 +1,5 @@
 resource "google_service_account" "multibot_sa" {
-  account_id   = "${terraform.workspace}-gcf-multibot-sa"
+  account_id   = "${terraform.workspace}-gcf-sa"
   display_name = "MultiBot CF Service Account for ${terraform.workspace} env"
 }
 
