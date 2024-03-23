@@ -21,13 +21,13 @@ resource "google_storage_bucket_object" "cf-http-object" {
 
 resource "google_cloudfunctions2_function" "cf_http_multibot" {
 
-  name        = "multibot"
+  name        = "multibot-${terraform.workspace}"
   location    = "us-west1"
-  description = "TG Multibot Cloud Function"
+  description = "TG Multibot Cloud Function (${terraform.workspace} env)"
 
   build_config {
     runtime     = "go122"
-    entry_point = "function_entrypoint" # Set the entry point
+    entry_point = "entrypoint" # Set the entry point
     source {
       storage_source {
         bucket = google_storage_bucket.cf-source-bucket.name
@@ -41,7 +41,7 @@ resource "google_cloudfunctions2_function" "cf_http_multibot" {
     max_instance_count    = 1
     available_memory      = "256M"
     timeout_seconds       = 60
-    ingress_settings      = "ALLOW_INTERNAL_AND_GCLB"
+    ingress_settings      = "ALLOW_ALL"
 
     environment_variables = {
       "GOOGLE_PROJECT_ID"      = split("/", data.google_project.project.id)[1]
