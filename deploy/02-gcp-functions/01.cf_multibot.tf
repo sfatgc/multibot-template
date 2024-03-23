@@ -3,18 +3,18 @@ resource "random_id" "resources_id" {
 }
 
 resource "google_storage_bucket" "cf-source-bucket" {
-  name                        = "${random_id.resources_id.hex}-gcf-source" # Every bucket name must be globally unique
+  name                        = "sfatgc-multibot-gcf-source-${random_id.resources_id.hex}" # Every bucket name must be globally unique
   location                    = "US"
   uniform_bucket_level_access = true
 }
 
 data "archive_file" "cf-http-source-zip" {
   type        = "zip"
-  output_path = "/tmp/cf-source-multibot-${local.functions_filenames_timestamp}.zip"
+  output_path = "/tmp/${terraform.workspace}-sfatgc-multibot-gcf-source-${local.functions_filenames_timestamp}.zip"
   source_dir  = "../../functions/multibot/"
 }
 resource "google_storage_bucket_object" "cf-http-object" {
-  name   = "cf-source-multibot-${local.functions_filenames_timestamp}.zip"
+  name   = "${terraform.workspace}-cf-source-multibot-${local.functions_filenames_timestamp}.zip"
   bucket = google_storage_bucket.cf-source-bucket.name
   source = data.archive_file.cf-http-source-zip.output_path
 }

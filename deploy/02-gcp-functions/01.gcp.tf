@@ -5,7 +5,7 @@ provider "google" {
 data "google_project" "project" {}
 data "google_client_config" "this" {}
 
-resource "google_project_service" "project" {
+resource "google_project_service" "service" {
   count   = length(local.services)
   service = local.services[count.index]
 

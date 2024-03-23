@@ -2,7 +2,7 @@ resource "google_secret_manager_secret" "bot_cred_tg_secret" {
 
   count = length(local.bots_secrets_list)
 
-  secret_id = "cred_multibot_tg_secret_${local.bots_secrets_list[count.index].name}"
+  secret_id = "${terraform.workspace}-cred_multibot_tg_secret_${local.bots_secrets_list[count.index].name}"
 
   replication {
     auto {}
@@ -24,7 +24,7 @@ resource "google_secret_manager_secret" "bot_cred_tg_token" {
 
   count = length(local.bots_secrets_list)
 
-  secret_id = "cred_multibot_tg_token_${local.bots_secrets_list[count.index].name}"
+  secret_id = "${terraform.workspace}-cred_multibot_tg_token_${local.bots_secrets_list[count.index].name}"
 
   replication {
     auto {}
@@ -43,7 +43,7 @@ resource "google_secret_manager_secret_version" "bot_cred_tg_token_version" {
 
 
 resource "google_secret_manager_secret" "bot_cred_stripe_secret" {
-  secret_id = "cred_multibot_stripe"
+  secret_id = "${terraform.workspace}-cred_multibot_stripe"
 
   replication {
     auto {}
@@ -55,7 +55,7 @@ resource "google_secret_manager_secret_version" "bot_cred_stripe_secret_version"
   secret_data = var.pp_stripe_token
 }
 resource "google_secret_manager_secret" "bot_cred_yoo_secret" {
-  secret_id = "cred_multibot_yoo"
+  secret_id = "${terraform.workspace}-cred_multibot_yoo"
 
   replication {
     auto {}
