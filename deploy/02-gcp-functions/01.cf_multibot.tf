@@ -31,7 +31,7 @@ resource "google_cloudfunctions2_function" "cf_http_multibot" {
     source {
       storage_source {
         bucket = google_storage_bucket.cf-source-bucket.name
-        object = google_storage_bucket_object.cf-http-object[count.index].name
+        object = google_storage_bucket_object.cf-http-object.name
       }
     }
   }
@@ -91,7 +91,7 @@ resource "google_cloudfunctions2_function" "cf_http_multibot" {
   }
 
   depends_on = [
-    google_project_service.project,
+    google_project_service.service,
     google_secret_manager_secret_version.bot_cred_tg_secret_version,
     google_secret_manager_secret_version.bot_cred_stripe_secret_version,
     google_secret_manager_secret_version.bot_cred_yoo_secret_version
