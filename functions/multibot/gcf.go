@@ -126,8 +126,12 @@ func entrypoint(w http.ResponseWriter, r *http.Request) {
 		log.Panic("Header X-Telegram-Bot-Api-Secret-Token is not provided in request. Quiting.")
 	}
 
-	bot := TG_BOTS[bot_secret]
+	bot, ok := TG_BOTS[bot_secret]
 
-	bot.TgWebhook.ServeHTTP(w, r)
+	if ok {
+		bot.TgWebhook.ServeHTTP(w, r)
+	} else {
+		log.Panicf("No bot defined for secret %sXXXXXXXXXX%s. Quitting.", bot_secret[0:2], bot_secret[len(bot_secret)-2:])
+	}
 
 }
