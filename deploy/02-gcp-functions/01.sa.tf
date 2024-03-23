@@ -25,7 +25,7 @@ resource "google_project_iam_binding" "bot_firestore_access" {
   condition {
     title       = "multibot_db_only"
     description = "Allows access only to the desired DB"
-    expression  = "resource.name.startsWith(\"projects/${local.project_num}/databases/${terraform.workspace}_multibot\")"
+    expression  = "resource.name.startsWith(\"projects/${local.project_num}/databases/${terraform.workspace}-multibot\")"
   }
 
   members = [
