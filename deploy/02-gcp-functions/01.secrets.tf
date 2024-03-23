@@ -2,7 +2,7 @@ resource "google_secret_manager_secret" "bot_cred_tg_secret" {
 
   count = length(local.bots_secrets_list)
 
-  secret_id = "${terraform.workspace}-cred_multibot_tg_secret_${local.bots_secrets_list[count.index].name}"
+  secret_id = "${terraform.workspace}_cred_multibot_tg_secret_${local.bots_secrets_list[count.index].name}"
 
   replication {
     auto {}
@@ -24,7 +24,7 @@ resource "google_secret_manager_secret" "bot_cred_tg_token" {
 
   count = length(local.bots_secrets_list)
 
-  secret_id = "${terraform.workspace}-cred_multibot_tg_token_${local.bots_secrets_list[count.index].name}"
+  secret_id = "${terraform.workspace}_cred_multibot_tg_token_${local.bots_secrets_list[count.index].name}"
 
   replication {
     auto {}
