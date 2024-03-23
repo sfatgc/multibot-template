@@ -10,6 +10,8 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
+
+	txhttp "github.com/corazawaf/coraza/v3/http"
 )
 
 var TG_BOTS map[string]*TgBot
@@ -111,7 +113,10 @@ func init() {
 		}
 	}
 
-	functions.HTTP("entrypoint", entrypoint)
+	waf := createWAF()
+	waf_http_handler := txhttp.WrapHandler(waf, http.HandlerFunc(entrypoint))
+
+	functions.HTTP("entrypoint", waf_http_handler.ServeHTTP)
 
 }
 
