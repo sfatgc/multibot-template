@@ -91,7 +91,7 @@ resource "google_cloudfunctions2_function" "cf_http_multibot" {
   }
 
   depends_on = [
-    google_project_service.service,
+    google_secret_manager_secret_version.bot_cred_tg_token_version,
     google_secret_manager_secret_version.bot_cred_tg_secret_version,
     google_secret_manager_secret_version.bot_cred_stripe_secret_version,
     google_secret_manager_secret_version.bot_cred_yoo_secret_version
