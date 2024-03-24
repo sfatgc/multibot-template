@@ -10,6 +10,7 @@ import (
 type TgBot struct {
 	BotName   string
 	Error     error
+	Verbose   bool
 	TgWebhook telebot.Webhook
 	TgBot     *telebot.Bot
 }
@@ -32,6 +33,7 @@ func NewBot(bot_name string, bot_telegram_token string, bot_webhook_secret strin
 	bot := TgBot{
 		bot_name,
 		err,
+		tbs.Verbose,
 		telebot.Webhook{MaxConnections: 5, SecretToken: bot_webhook_secret, Endpoint: &telebot.WebhookEndpoint{PublicURL: bot_webhook_url}},
 		tele_bot,
 	}
@@ -70,10 +72,12 @@ func (b *TgBot) CheckWebhook() bool {
 
 		// TODO: Remove secret value logging after debug
 		if wh.SecretToken != b.TgWebhook.SecretToken {
-			log.Printf("Webhook check: Bot %s webhook secret (%s) doesn't match desired value (%s)",
-				b.BotName,
-				wh.SecretToken,
-				b.TgWebhook.SecretToken)
+			if b.Verbose {
+				log.Printf("Webhook check: Bot %s webhook secret (%s) doesn't match desired value (%s)",
+					b.BotName,
+					wh.SecretToken,
+					b.TgWebhook.SecretToken)
+			}
 			result = false
 		}
 
