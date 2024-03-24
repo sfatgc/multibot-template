@@ -43,7 +43,7 @@ resource "google_secret_manager_secret_version" "bot_cred_tg_token_version" {
 
 
 resource "google_secret_manager_secret" "bot_cred_stripe_secret" {
-  secret_id = "${terraform.workspace}-cred_multibot_stripe"
+  secret_id = "${terraform.workspace}_cred_multibot_stripe"
 
   replication {
     auto {}
@@ -55,7 +55,7 @@ resource "google_secret_manager_secret_version" "bot_cred_stripe_secret_version"
   secret_data = var.pp_stripe_token
 }
 resource "google_secret_manager_secret" "bot_cred_yoo_secret" {
-  secret_id = "${terraform.workspace}-cred_multibot_yoo"
+  secret_id = "${terraform.workspace}_cred_multibot_yoo"
 
   replication {
     auto {}
