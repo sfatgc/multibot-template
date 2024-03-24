@@ -1,7 +1,3 @@
-provider "google" {
-  region = "us-west1"
-}
-
 resource "google_project_service" "service" {
   count   = length(local.services)
   service = local.services[count.index]

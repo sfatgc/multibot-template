@@ -5,16 +5,6 @@ locals {
   project_num = data.google_project.project.number
   project_id  = data.google_project.project.id
 
-  services = [
-    "iam.googleapis.com",
-    "cloudfunctions.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "run.googleapis.com",
-    "cloudbuild.googleapis.com",
-    "secretmanager.googleapis.com",
-    "firestore.googleapis.com",
-  ]
-
   bots_secrets_list = [
     { name = var.telegram_bot1_name, secret = var.telegram_bot1_secret, token = var.telegram_bot1_token },
     { name = var.telegram_bot2_name, secret = var.telegram_bot2_secret, token = var.telegram_bot2_token }
