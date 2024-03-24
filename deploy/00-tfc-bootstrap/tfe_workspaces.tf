@@ -16,9 +16,7 @@ resource "tfe_workspace" "gcp-bootstrap" {
 
 locals {
   gcf_envs = {
-    "dev"  = {}
-    "test" = {}
-    "prod" = {}
+    "dev" = {}
   }
 }
 
