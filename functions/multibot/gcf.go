@@ -66,22 +66,31 @@ func init() {
 		} else {
 
 			bot_secret_env_var_name := fmt.Sprintf("TELEGRAM_BOT_SECRET_%s", bot_name)
-			bot_secret, env_success := os.LookupEnv(bot_secret_env_var_name)
+			bot_webhook_secret, env_success := os.LookupEnv(bot_secret_env_var_name)
 			if !env_success {
 
 				log.Fatalf("Error getting %s environment variable", bot_secret_env_var_name)
 
 			} else {
 
-				var err error
+				bot_webhook_url, env_success := os.LookupEnv("TELEGRAM_BOT_URL")
+				if !env_success {
 
-				TG_BOTS[bot_secret], err = NewBot(bot_name, bot_token, bot_secret)
+					log.Fatalf("Error getting BOT_WEBHOOK_URL environment variable")
 
-				if err != nil {
-					log.Fatalf("Unable to create bot \"%s\": %s", bot_name, err)
+				} else {
+
+					var err error
+
+					TG_BOTS[bot_webhook_secret], err = NewBot(bot_name, bot_token, bot_webhook_secret, bot_webhook_url)
+
+					if err != nil {
+						log.Fatalf("Unable to create bot \"%s\": %s", bot_name, err)
+					}
+
+					log.Printf("Bot \"%s\" successfully initialized.", bot_name)
+
 				}
-
-				log.Printf("Bot \"%s\" successfully initialized.", bot_name)
 
 			}
 
