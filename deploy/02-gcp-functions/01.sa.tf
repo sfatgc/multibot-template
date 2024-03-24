@@ -10,7 +10,7 @@ resource "google_project_iam_binding" "bot_secrets_access" {
   condition {
     title       = "multibot_secrets_only"
     description = "Allows access only to the desired secrets"
-    expression  = "resource.name.startsWith(\"projects/${local.project_num}/secrets/${terraform.workspace}-cred_multibot_\")"
+    expression  = "resource.name.startsWith(\"projects/${local.project_num}/secrets/${terraform.workspace}_cred_multibot_\")"
   }
 
   members = [
