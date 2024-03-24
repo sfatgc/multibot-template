@@ -130,6 +130,9 @@ func init() {
 }
 
 func entrypoint(w http.ResponseWriter, r *http.Request) {
+
+	log.Printf("entrypoint: service request from %s", r.RemoteAddr)
+
 	bot_secret := r.Header.Get("X-Telegram-Bot-Api-Secret-Token")
 	if bot_secret == "" {
 		log.Panic("Header X-Telegram-Bot-Api-Secret-Token is not provided in request. Quiting.")
@@ -138,7 +141,9 @@ func entrypoint(w http.ResponseWriter, r *http.Request) {
 	bot, ok := TG_BOTS[bot_secret]
 
 	if ok {
+		log.Printf("entrypoint: bot found for serving request: %s", bot.BotName)
 		bot.TgWebhook.ServeHTTP(w, r)
+		log.Printf("entrypoint: bot %s served request", bot.BotName)
 	} else {
 		log.Panicf("No bot defined for secret %sXXXXXXXXXX%s. Quitting.", bot_secret[0:2], bot_secret[len(bot_secret)-2:])
 	}
