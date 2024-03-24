@@ -51,6 +51,10 @@ func (b *TgBot) CheckWebhook() bool {
 	wh, err := tb.Webhook()
 
 	if err == nil {
+
+		if wh.Endpoint == nil || b.TgWebhook.Endpoint == nil {
+			return false
+		}
 		if wh.Endpoint.PublicURL != b.TgWebhook.Endpoint.PublicURL {
 			return false
 		}
