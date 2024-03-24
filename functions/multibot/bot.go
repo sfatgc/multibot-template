@@ -32,7 +32,7 @@ func NewBot(bot_name string, bot_telegram_token string, bot_webhook_secret strin
 	bot := TgBot{
 		bot_name,
 		err,
-		telebot.Webhook{MaxConnections: 5, SecretToken: bot_telegram_token, Endpoint: &telebot.WebhookEndpoint{PublicURL: bot_webhook_url}},
+		telebot.Webhook{MaxConnections: 5, SecretToken: bot_webhook_secret, Endpoint: &telebot.WebhookEndpoint{PublicURL: bot_webhook_url}},
 		tele_bot,
 	}
 
