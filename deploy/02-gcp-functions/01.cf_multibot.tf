@@ -22,7 +22,7 @@ resource "google_storage_bucket_object" "cf-http-object" {
 resource "google_cloudfunctions2_function" "cf_http_multibot" {
 
   name        = "multibot-${terraform.workspace}"
-  location    = "us-west1"
+  location    = local.region
   description = "TG Multibot Cloud Function (${terraform.workspace} env)"
 
   build_config {
@@ -47,6 +47,7 @@ resource "google_cloudfunctions2_function" "cf_http_multibot" {
       "GOOGLE_PROJECT_ID"      = split("/", data.google_project.project.id)[1]
       "GOOGLE_FIRESTORE_DB_ID" = element(local.google_firestore_db_id, length(local.google_firestore_db_id) - 1)
       "TELEGRAM_BOTS_LIST"     = var.telegram_bots_list
+      "TELEGRAM_BOT_URL"       = "https://${local.region}-${local.project}.cloudfunctions.net/multibot-${terraform.workspace}"
     }
 
 
