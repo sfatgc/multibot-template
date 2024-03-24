@@ -1,7 +1,9 @@
 package multibot
 
 import (
+	"encoding/json"
 	"log"
+	"net/http"
 	"reflect"
 
 	"gopkg.in/telebot.v3"
@@ -103,4 +105,16 @@ func (b *TgBot) CheckWebhook() bool {
 	}
 
 	return result
+}
+
+func (b *TgBot) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	var update telebot.Update
+
+	if err := json.NewDecoder(r.Body).Decode(&update); err != nil {
+		log.Panicf("Cannot decode request body to telebot.Update struct. Quitting.")
+	}
+
+	b.TgBot.ProcessUpdate(update)
+
 }
