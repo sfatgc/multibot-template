@@ -82,7 +82,7 @@ func init() {
 
 					var err error
 
-					TG_BOTS[bot_webhook_secret], err = NewBot(bot_name, bot_token, bot_webhook_secret, bot_webhook_url)
+					TG_BOTS[bot_webhook_secret], err = CreateBot(bot_name, bot_token, bot_webhook_secret, bot_webhook_url)
 
 					if err != nil {
 						log.Fatalf("Unable to create bot \"%s\": %s", bot_name, err)
