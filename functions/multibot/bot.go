@@ -126,7 +126,7 @@ func NewBot(bot_name string, bot_telegram_token string, bot_webhook_secret strin
 	var bot TgBotInterface
 
 	switch bot_name {
-	case "bulgakteer":
+	case "BULGAKTEER":
 		bot = &TgBotBulgakteer{
 			TgBot{bot_name,
 				err,
@@ -134,7 +134,7 @@ func NewBot(bot_name string, bot_telegram_token string, bot_webhook_secret strin
 				telebot.Webhook{MaxConnections: 5, SecretToken: bot_webhook_secret, Endpoint: &telebot.WebhookEndpoint{PublicURL: bot_webhook_url}},
 				tele_bot},
 		}
-	case "sfatgc":
+	case "SFATGC":
 		bot = &TgBotSFATGC{
 			TgBot{bot_name,
 				err,
