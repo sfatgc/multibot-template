@@ -12,7 +12,7 @@ type TgBotBulgakteer struct {
 
 func (b *TgBotBulgakteer) Handle(c telebot.Context) error {
 	message := c.Text()
-	response := fmt.Sprintf("Bulgakteer bot says: %s", message)
+	response := fmt.Sprintf("Bulgakteer bot says: I am %s\n You asked for %s", b.BotName, message)
 	_, err := c.Bot().Send(c.Sender(), response)
 	return err
 }

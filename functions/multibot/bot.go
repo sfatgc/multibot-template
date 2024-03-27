@@ -41,7 +41,7 @@ func (b *TgBot) GetTgWebhook() *telebot.Webhook {
 
 func (b *TgBot) Handle(c telebot.Context) error {
 	message := c.Text()
-	response := fmt.Sprintf("Abstract bot says: %s", message)
+	response := fmt.Sprintf("Abstract bot says: I am %s\n You asked for %s", b.BotName, message)
 	_, err := c.Bot().Send(c.Sender(), response)
 	return err
 }
