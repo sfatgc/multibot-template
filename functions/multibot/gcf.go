@@ -14,7 +14,7 @@ import (
 	txhttp "github.com/corazawaf/coraza/v3/http"
 )
 
-var TG_BOTS map[string]*TgBot
+var TG_BOTS map[string]TgBotInterface
 var FIRESTORE_CLIENT *firestore.Client
 var FIRESTORE_ERR error
 var PP_STRIPE_TOKEN string
@@ -45,7 +45,7 @@ func init() {
 	 *   request came, by secret specified as
 	 *   "X-Telegram-Bot-Api-Secret-Token" HTTP header value
 	 */
-	TG_BOTS = make(map[string]*TgBot, len(bots_list))
+	TG_BOTS = make(map[string]TgBotInterface, len(bots_list))
 
 	/*
 	 * The set of env vars suffixed with bot name from TELEGRAM_BOTS_LIST
@@ -141,11 +141,11 @@ func entrypoint(w http.ResponseWriter, r *http.Request) {
 	bot, ok := TG_BOTS[bot_secret]
 
 	if ok {
-		log.Printf("entrypoint: bot found for serving request: %s", bot.BotName)
+		log.Printf("entrypoint: bot found for serving request: %s", bot.GetBotName())
 
 		bot.ServeHTTP(w, r)
 
-		log.Printf("entrypoint: bot %s served request", bot.BotName)
+		log.Printf("entrypoint: bot %s served request", bot.GetBotName())
 	} else {
 		log.Panicf("No bot defined for secret %sXXXXXXXXXX%s. Quitting.", bot_secret[0:2], bot_secret[len(bot_secret)-2:])
 	}

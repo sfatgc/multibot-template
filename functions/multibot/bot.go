@@ -2,12 +2,22 @@ package multibot
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"reflect"
 
 	"gopkg.in/telebot.v3"
 )
+
+type TgBotInterface interface {
+	GetBotName() string
+	GetTgBot() *telebot.Bot
+	GetTgWebhook() *telebot.Webhook
+	Handle(c telebot.Context) error
+	ServeHTTP(w http.ResponseWriter, r *http.Request)
+	CheckWebhook() bool
+}
 
 type TgBot struct {
 	BotName   string
@@ -17,41 +27,38 @@ type TgBot struct {
 	TgBot     *telebot.Bot
 }
 
-func NewBot(bot_name string, bot_telegram_token string, bot_webhook_secret string, bot_webhook_url string) (*TgBot, error) {
-
-	tbs := telebot.Settings{Token: bot_telegram_token, Verbose: true}
-
-	tele_bot, err := telebot.NewBot(tbs)
-	if err != nil {
-		return nil, err
-	}
-
-	tele_bot.Handle(telebot.OnText, func(c telebot.Context) error {
-		message := c.Text()
-		_, err := tele_bot.Send(c.Sender(), message)
-		return err
-	})
-
-	bot := TgBot{
-		bot_name,
-		err,
-		tbs.Verbose,
-		telebot.Webhook{MaxConnections: 5, SecretToken: bot_webhook_secret, Endpoint: &telebot.WebhookEndpoint{PublicURL: bot_webhook_url}},
-		tele_bot,
-	}
-
-	if !bot.CheckWebhook() {
-		err := bot.TgBot.SetWebhook(&bot.TgWebhook)
-
-		if err != nil {
-			return &bot, err
-		}
-	}
-
-	return &bot, nil
+func (b *TgBot) GetBotName() string {
+	return b.BotName
 }
 
-func (b *TgBot) CheckWebhook() bool {
+func (b *TgBot) GetTgBot() *telebot.Bot {
+	return b.TgBot
+}
+
+func (b *TgBot) GetTgWebhook() *telebot.Webhook {
+	return &b.TgWebhook
+}
+
+func (b *TgBot) Handle(c telebot.Context) error {
+	message := c.Text()
+	response := fmt.Sprintf("Abstract bot says: %s", message)
+	_, err := c.Bot().Send(c.Sender(), response)
+	return err
+}
+
+func (b *TgBot) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	var update telebot.Update
+
+	if err := json.NewDecoder(r.Body).Decode(&update); err != nil {
+		log.Panicf("Cannot decode request body to telebot.Update struct. Quitting.")
+	}
+
+	b.TgBot.ProcessUpdate(update)
+
+}
+
+func (b TgBot) CheckWebhook() bool {
 
 	result := true
 
@@ -107,14 +114,46 @@ func (b *TgBot) CheckWebhook() bool {
 	return result
 }
 
-func (b *TgBot) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func NewBot(bot_name string, bot_telegram_token string, bot_webhook_secret string, bot_webhook_url string) (TgBotInterface, error) {
 
-	var update telebot.Update
+	tbs := telebot.Settings{Token: bot_telegram_token, Verbose: true}
 
-	if err := json.NewDecoder(r.Body).Decode(&update); err != nil {
-		log.Panicf("Cannot decode request body to telebot.Update struct. Quitting.")
+	tele_bot, err := telebot.NewBot(tbs)
+	if err != nil {
+		return nil, err
 	}
 
-	b.TgBot.ProcessUpdate(update)
+	var bot TgBotInterface
 
+	switch bot_name {
+	case "bulgakteer":
+		bot = &TgBotBulgakteer{
+			TgBot{bot_name,
+				err,
+				tbs.Verbose,
+				telebot.Webhook{MaxConnections: 5, SecretToken: bot_webhook_secret, Endpoint: &telebot.WebhookEndpoint{PublicURL: bot_webhook_url}},
+				tele_bot},
+		}
+	case "sfatgc":
+	default:
+		bot = &TgBot{
+			bot_name,
+			err,
+			tbs.Verbose,
+			telebot.Webhook{MaxConnections: 5, SecretToken: bot_webhook_secret, Endpoint: &telebot.WebhookEndpoint{PublicURL: bot_webhook_url}},
+			tele_bot,
+		}
+	}
+
+	bot.GetTgBot().Handle(telebot.OnText, bot.Handle)
+
+	if !bot.CheckWebhook() {
+		err := bot.GetTgBot().SetWebhook(bot.GetTgWebhook())
+
+		if err != nil {
+			return bot, err
+		}
+	}
+
+	return bot, nil
 }
