@@ -135,6 +135,13 @@ func NewBot(bot_name string, bot_telegram_token string, bot_webhook_secret strin
 				tele_bot},
 		}
 	case "sfatgc":
+		bot = &TgBotSFATGC{
+			TgBot{bot_name,
+				err,
+				tbs.Verbose,
+				telebot.Webhook{MaxConnections: 5, SecretToken: bot_webhook_secret, Endpoint: &telebot.WebhookEndpoint{PublicURL: bot_webhook_url}},
+				tele_bot},
+		}
 	default:
 		bot = &TgBot{
 			bot_name,
